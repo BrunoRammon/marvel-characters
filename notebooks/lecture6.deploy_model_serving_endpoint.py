@@ -42,8 +42,12 @@ schema_name = config.schema_name
 
 # COMMAND ----------
 # Initialize model serving
+endpoint_name = "marvel-character-model-serving"
+
+# COMMAND ----------
+
 model_serving = ModelServing(
-    model_name=f"{catalog_name}.{schema_name}.marvel_character_model_custom", endpoint_name="marvel-character-model-serving"
+    model_name=f"{catalog_name}.{schema_name}.marvel_character_model_custom", endpoint_name=f"{endpoint_name}"
 )
 
 # COMMAND ----------
@@ -106,7 +110,7 @@ def call_endpoint(record):
         print(f"Warning: DBR_HOST '{host}' may be incomplete. Adding '.com' domain suffix.")
         host = f"{host}.com"
         
-    serving_endpoint = f"https://{host}/serving-endpoints/marvel-character-model-serving/invocations"
+    serving_endpoint = f"https://{host}/serving-endpoints/{endpoint_name}/invocations"
     
     print(f"Calling endpoint: {serving_endpoint}")
     

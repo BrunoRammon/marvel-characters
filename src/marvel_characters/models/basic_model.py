@@ -134,7 +134,6 @@ class BasicModel:
         with mlflow.start_run(tags=self.tags) as run:
             self.run_id = run.info.run_id
 
-            signature = infer_signature(model_input=self.X_train, model_output=self.pipeline.predict(self.X_train))
             train_dataset = mlflow.data.from_spark(
                 self.train_set_spark,
                 table_name=f"{self.catalog_name}.{self.schema_name}.train_set",
@@ -146,7 +145,9 @@ class BasicModel:
                 table_name=f"{self.catalog_name}.{self.schema_name}.test_set",
                 version=self.test_data_version,
             )
-            mlflow.log_input(test_dataset, context="training")
+            mlflow.log_input(test_dataset, context="testing")
+
+            signature = infer_signature(model_input=self.X_train, model_output=self.pipeline.predict(self.X_train))
             self.model_info = mlflow.sklearn.log_model(
                 sk_model=self.pipeline,
                 artifact_path="lightgbm-pipeline-model",
